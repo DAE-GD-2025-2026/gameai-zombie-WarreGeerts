@@ -8,8 +8,6 @@
 #include "Common/InventoryComponent.h"
 
 
-
-
 UStudentPerceptorGeertsWarre::UStudentPerceptorGeertsWarre()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -33,7 +31,7 @@ void UStudentPerceptorGeertsWarre::BeginPlay()
 }
 
 void UStudentPerceptorGeertsWarre::TickComponent(float DeltaTime, ELevelTick TickType,
-                                      FActorComponentTickFunction* ThisTickFunction)
+                                                 FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
@@ -144,7 +142,7 @@ void UStudentPerceptorGeertsWarre::UpdateBlackboardData(AActor* Actor, const FAI
 			BlackboardComp->SetValueAsObject(TEXT("TargetActor"), Actor);
 			BlackboardComp->SetValueAsVector(TEXT("TargetLocation"), Actor->GetActorLocation());
 
-			PickUp(Actor);			
+			PickUp(Actor);
 		}
 		else
 		{
@@ -162,72 +160,53 @@ void UStudentPerceptorGeertsWarre::OnPerceptionUpdated(AActor* Actor, FAIStimulu
 
 void UStudentPerceptorGeertsWarre::PickUp(AActor* Actor)
 {
-    APawn* OwnerPawn = Cast<APawn>(GetOwner());
-    if (!OwnerPawn) return;
-    
-    const float DistanceToTarget = FVector::Dist(OwnerPawn->GetActorLocation(), Actor->GetActorLocation());
-    if (DistanceToTarget <= PickupRange)
-    {
-        UInventoryComponent* TargetInventory = OwnerPawn->GetComponentByClass<UInventoryComponent>();
+	APawn* OwnerPawn = Cast<APawn>(GetOwner());
+	if (!OwnerPawn) return;
 
-        if (TargetInventory)
-        {
-            ABaseItem* PerceivedItem = Cast<ABaseItem>(Actor);
+	const float DistanceToTarget = FVector::Dist(OwnerPawn->GetActorLocation(), Actor->GetActorLocation());
+	if (DistanceToTarget > PickupRange) return;
 
-            if (PerceivedItem)
-            {
-                // Get a reference to the inventory array
-                const TArray<ABaseItem*>& InventoryItems = TargetInventory->GetInventory();
-                
-                int32 TargetSlot = -1;
+	UInventoryComponent* TargetInventory = OwnerPawn->GetComponentByClass<UInventoryComponent>();
+	if (!TargetInventory) return;
 
-                // Loop through to find the first empty slot (nullptr)
-                for (int32 i = 0; i < InventoryItems.Num(); i++)
-                {
-                    if (InventoryItems[i] == nullptr)
-                    {
-                        TargetSlot = i; // Found an empty slot!
-                        break;          // Stop looking, we want the first available one
-                    }
-                }
+	ABaseItem* PerceivedItem = Cast<ABaseItem>(Actor);
+	if (!PerceivedItem) return;
 
-                // If TargetSlot is still -1, it means all slots are full
-                if (TargetSlot != -1)
-                {
-                    bool bGrabSuccessful = TargetInventory->GrabItem(TargetSlot, PerceivedItem);
+	const TArray<ABaseItem*>& InventoryItems = TargetInventory->GetInventory();
 
-                    if (bGrabSuccessful)
-                    {
-                        GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Cyan,
-                            FString::Printf(TEXT("Item grabbed successfully into Slot %d!"), TargetSlot));
-                        
-                        // Print out the updated inventory state
-                        for (int32 i = 0; i < InventoryItems.Num(); i++)
-                        {
-                            ABaseItem* CurrentItem = InventoryItems[i]; 
-                            FString SlotStatus = CurrentItem ? CurrentItem->GetName() : TEXT("Empty");
-                            FString DebugMessage = FString::Printf(TEXT("Slot %d: %s"), i, *SlotStatus);
-                
-                            GEngine->AddOnScreenDebugMessage(
-                                -1, 
-                                10.f, 
-                                CurrentItem ? FColor::Cyan : FColor::Orange, 
-                                DebugMessage
-                            );
-                        }
-                    }
-                    else
-                    {
-                        GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-                            TEXT("Grab failed! Item initialization or constraint issue."));
-                    }
-                }
-                else
-                {
-                    GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-                        TEXT("Grab failed! Inventory is completely full."));
-                }
-            }
-        }
-    }
+	int32 TargetSlot = -1;
+
+	for (int32 i = 0; i < InventoryItems.Num(); i++)
+	{
+		if (InventoryItems[i] == nullptr)
+		{
+			TargetSlot = i;
+			break;
+		}
+	}
+
+	if (TargetSlot != -1)
+	{
+		bool bGrabSuccessful = TargetInventory->GrabItem(TargetSlot, PerceivedItem);
+		if (!bGrabSuccessful) return;
+
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Cyan,
+		                                 FString::Printf(
+			                                 TEXT("Item grabbed successfully into Slot %d!"),
+			                                 TargetSlot));
+
+		for (int32 i = 0; i < InventoryItems.Num(); i++)
+		{
+			ABaseItem* CurrentItem = InventoryItems[i];
+			FString SlotStatus = CurrentItem ? CurrentItem->GetName() : TEXT("Empty");
+			FString DebugMessage = FString::Printf(TEXT("Slot %d: %s"), i, *SlotStatus);
+
+			GEngine->AddOnScreenDebugMessage(
+				-1,
+				10.f,
+				CurrentItem ? FColor::Cyan : FColor::Orange,
+				DebugMessage
+			);
+		}
+	}
 }
