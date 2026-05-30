@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UPlayerBrainGeertsWarre.h"
+#include "UPlayerInventoryGeertsWarre.h"
 #include "Components/ActorComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
@@ -12,22 +14,7 @@
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class GEERTSWARREZOMBIERUNTIME_API UStudentPerceptorGeertsWarre : public UActorComponent
 {
-	GENERATED_BODY()
-
-	// Tracked zombies that the player actively "remembers"
-	UPROPERTY()
-	TSet<AActor*> TrackedZombies;
-
-	// The maximum radius the player will remember a zombie after losing sight
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI Fleeing", meta = (AllowPrivateAccess = "true"))
-	float MemoryRadius = 2000.f;
-	
-	virtual void PickUp(AActor* Actor);
-	float PickupRange;
-	
-	
 public:
-	// Sets default values for this component's properties
 	UStudentPerceptorGeertsWarre();
 	
 	virtual void BeginPlay() override;
@@ -36,4 +23,13 @@ public:
 	void UpdateBlackboardData(AActor* Actor, const FAIStimulus& Stimulus);
 	UFUNCTION()
 	virtual void OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	
+private:
+	GENERATED_BODY()
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UPlayerBrainGeertsWarre> Brain;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UPlayerInventoryGeertsWarre> Inventory;
 };

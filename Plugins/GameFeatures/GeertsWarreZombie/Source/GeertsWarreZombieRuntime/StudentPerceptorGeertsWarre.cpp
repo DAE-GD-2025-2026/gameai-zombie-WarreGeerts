@@ -1,16 +1,15 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "StudentPerceptorGeertsWarre.h"
-
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"
-#include "Common/InventoryComponent.h"
-
 
 UStudentPerceptorGeertsWarre::UStudentPerceptorGeertsWarre()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+    
+	Brain = CreateDefaultSubobject<UPlayerBrainGeertsWarre>(TEXT("PlayerBrain"));
+	Inventory = CreateDefaultSubobject<UPlayerInventoryGeertsWarre>(TEXT("PlayerInventory"));	
 }
 
 void UStudentPerceptorGeertsWarre::BeginPlay()
@@ -22,12 +21,7 @@ void UStudentPerceptorGeertsWarre::BeginPlay()
 		PerceptionComp->OnTargetPerceptionUpdated.AddDynamic(this, &UStudentPerceptorGeertsWarre::OnPerceptionUpdated);
 	}
 
-	APawn* OwnerPawn = Cast<APawn>(GetOwner());
-	if (OwnerPawn)
-	{
-		UInventoryComponent* TargetInventory = OwnerPawn->GetComponentByClass<UInventoryComponent>();
-		PickupRange = TargetInventory->GetPickupRange();
-	}
+	
 }
 
 void UStudentPerceptorGeertsWarre::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -44,35 +38,15 @@ void UStudentPerceptorGeertsWarre::TickComponent(float DeltaTime, ELevelTick Tic
 	UBlackboardComponent* BlackboardComp = AIController->GetBlackboardComponent();
 	if (!BlackboardComp) return;
 
-	FVector PlayerLocation = OwnerPawn->GetActorLocation();
+	const FVector PlayerLocation = OwnerPawn->GetActorLocation();
 
-	TArray<AActor*> ZombiesToRemove;
-	for (AActor* Zombie : TrackedZombies)
-	{
-		if (!Zombie || !Zombie->IsValidLowLevel())
-		{
-			ZombiesToRemove.Add(Zombie);
-			continue;
-		}
+	Brain->ForgetZombies(PlayerLocation);
 
-		float Distance = FVector::Dist(PlayerLocation, Zombie->GetActorLocation());
-		if (Distance > MemoryRadius)
-		{
-			ZombiesToRemove.Add(Zombie);
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Forgot zombie: Out of radius."));
-		}
-	}
-
-	for (AActor* ZombieToForget : ZombiesToRemove)
-	{
-		TrackedZombies.Remove(ZombieToForget);
-	}
-
-	if (TrackedZombies.Num() > 0)
+	if (Brain->GetTrackedZombies().Num() > 0)
 	{
 		FVector CombinedAwayDir = FVector::ZeroVector;
 
-		for (AActor* Zombie : TrackedZombies)
+		for (AActor* Zombie : Brain->GetTrackedZombies())
 		{
 			if (Zombie)
 			{
@@ -87,12 +61,13 @@ void UStudentPerceptorGeertsWarre::TickComponent(float DeltaTime, ELevelTick Tic
 		}
 
 		CombinedAwayDir = CombinedAwayDir.GetSafeNormal();
-		FVector FleeLocation = PlayerLocation + (CombinedAwayDir * 1200.f);
+		FVector FleeLocation = PlayerLocation + (CombinedAwayDir * 100.f);
 
 		BlackboardComp->SetValueAsVector(TEXT("FleeLocation"), FleeLocation);
 
 		//Debug
-		DrawDebugLine(GetWorld(), PlayerLocation, FleeLocation, FColor::Emerald, false, -1.f, 0, 4.f);
+		DrawDebugLine(GetWorld(), PlayerLocation, FleeLocation, FColor::Emerald,
+		              false, -1.f, 0, 4.f);
 	}
 	else
 	{
@@ -106,24 +81,13 @@ void UStudentPerceptorGeertsWarre::TickComponent(float DeltaTime, ELevelTick Tic
 
 void UStudentPerceptorGeertsWarre::UpdateBlackboardData(AActor* Actor, const FAIStimulus& Stimulus)
 {
-	bool bIsZombie = false;
-	if (const APawn* Pawn = Cast<APawn>(Actor))
-	{
-		if (const AController* Controller = Pawn->GetController())
-		{
-			if (Controller->GetClass()->GetName().Contains(TEXT("BP_ZombieController")))
-			{
-				bIsZombie = true;
-			}
-		}
-	}
-
-	if (bIsZombie)
+	if (Brain->ZombieCheck(Actor))
 	{
 		if (Stimulus.WasSuccessfullySensed())
 		{
-			TrackedZombies.Add(Actor);
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, TEXT("Zombie spotted and added to memory!"));
+			Brain->GetTrackedZombies().Add(Actor);
+				GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, 
+					TEXT("Zombie spotted and added to memory!"));
 		}
 	}
 	else
@@ -142,7 +106,12 @@ void UStudentPerceptorGeertsWarre::UpdateBlackboardData(AActor* Actor, const FAI
 			BlackboardComp->SetValueAsObject(TEXT("TargetActor"), Actor);
 			BlackboardComp->SetValueAsVector(TEXT("TargetLocation"), Actor->GetActorLocation());
 
-			PickUp(Actor);
+			
+			if (Inventory->PickUp(Actor))
+			{
+				BlackboardComp->ClearValue(TEXT("TargetActor"));
+				BlackboardComp->ClearValue(TEXT("TargetLocation"));
+			}
 		}
 		else
 		{
@@ -158,55 +127,7 @@ void UStudentPerceptorGeertsWarre::OnPerceptionUpdated(AActor* Actor, FAIStimulu
 	UpdateBlackboardData(Actor, Stimulus);
 }
 
-void UStudentPerceptorGeertsWarre::PickUp(AActor* Actor)
-{
-	APawn* OwnerPawn = Cast<APawn>(GetOwner());
-	if (!OwnerPawn) return;
 
-	const float DistanceToTarget = FVector::Dist(OwnerPawn->GetActorLocation(), Actor->GetActorLocation());
-	if (DistanceToTarget > PickupRange) return;
 
-	UInventoryComponent* TargetInventory = OwnerPawn->GetComponentByClass<UInventoryComponent>();
-	if (!TargetInventory) return;
 
-	ABaseItem* PerceivedItem = Cast<ABaseItem>(Actor);
-	if (!PerceivedItem) return;
 
-	const TArray<ABaseItem*>& InventoryItems = TargetInventory->GetInventory();
-
-	int32 TargetSlot = -1;
-
-	for (int32 i = 0; i < InventoryItems.Num(); i++)
-	{
-		if (InventoryItems[i] == nullptr)
-		{
-			TargetSlot = i;
-			break;
-		}
-	}
-
-	if (TargetSlot != -1)
-	{
-		bool bGrabSuccessful = TargetInventory->GrabItem(TargetSlot, PerceivedItem);
-		if (!bGrabSuccessful) return;
-
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Cyan,
-		                                 FString::Printf(
-			                                 TEXT("Item grabbed successfully into Slot %d!"),
-			                                 TargetSlot));
-
-		for (int32 i = 0; i < InventoryItems.Num(); i++)
-		{
-			ABaseItem* CurrentItem = InventoryItems[i];
-			FString SlotStatus = CurrentItem ? CurrentItem->GetName() : TEXT("Empty");
-			FString DebugMessage = FString::Printf(TEXT("Slot %d: %s"), i, *SlotStatus);
-
-			GEngine->AddOnScreenDebugMessage(
-				-1,
-				10.f,
-				CurrentItem ? FColor::Cyan : FColor::Orange,
-				DebugMessage
-			);
-		}
-	}
-}
