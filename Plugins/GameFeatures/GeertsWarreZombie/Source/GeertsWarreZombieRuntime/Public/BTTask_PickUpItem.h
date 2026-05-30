@@ -11,12 +11,11 @@ class GEERTSWARREZOMBIERUNTIME_API UBTTask_PickUpItem : public UBTTaskNode
 
 public:
 	UBTTask_PickUpItem();
+	float PickupRange = 100.f;
     
+protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
 	FBlackboardKeySelector TargetItemKey;
-
-private:
-	float PickupRange = 200.f;
 };

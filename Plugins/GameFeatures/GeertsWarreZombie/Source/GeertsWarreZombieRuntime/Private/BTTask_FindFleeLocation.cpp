@@ -10,12 +10,12 @@ UBTTask_FindFleeLocation::UBTTask_FindFleeLocation()
 
 EBTNodeResult::Type UBTTask_FindFleeLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	AAIController* AIController = OwnerComp.GetAIOwner();
+	const AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 
 	if (!AIController || !BlackboardComp) return EBTNodeResult::Failed;
 
-	APawn* OwnerPawn = AIController->GetPawn();
+	const APawn* OwnerPawn = AIController->GetPawn();
 	if (!OwnerPawn) return EBTNodeResult::Failed;
 
 	UStudentPerceptorGeertsWarre* Perceptor = OwnerPawn->FindComponentByClass<UStudentPerceptorGeertsWarre>();
@@ -33,7 +33,7 @@ EBTNodeResult::Type UBTTask_FindFleeLocation::ExecuteTask(UBehaviorTreeComponent
 			continue;
 		}
 
-		float Distance = FVector::Dist(PlayerLocation, Zombie->GetActorLocation());
+		const float Distance = FVector::Dist(PlayerLocation, Zombie->GetActorLocation());
 		if (Distance > MemoryRadius)
 		{
 			ZombiesToRemove.Add(Zombie);
@@ -42,7 +42,7 @@ EBTNodeResult::Type UBTTask_FindFleeLocation::ExecuteTask(UBehaviorTreeComponent
 		}
 	}
 
-	for (AActor* ZombieToForget : ZombiesToRemove)
+	for (const AActor* ZombieToForget : ZombiesToRemove)
 	{
 		TrackedZombies.Remove(ZombieToForget);
 	}
@@ -57,22 +57,22 @@ EBTNodeResult::Type UBTTask_FindFleeLocation::ExecuteTask(UBehaviorTreeComponent
 	{
 		FVector CombinedAwayDir = FVector::ZeroVector;
 
-		for (AActor* Zombie : TrackedZombies)
+		for (const AActor* Zombie : TrackedZombies)
 		{
 			if (Zombie)
 			{
 				FVector ZombieLocation = Zombie->GetActorLocation();
 				FVector AwayFromZombie = (PlayerLocation - ZombieLocation).GetSafeNormal();
 
-				float Distance = FVector::Dist(PlayerLocation, ZombieLocation);
-				float Weight = 1.0f / FMath::Max(Distance, 1.0f);
+				const float Distance = FVector::Dist(PlayerLocation, ZombieLocation);
+				const float Weight = 1.0f / FMath::Max(Distance, 1.0f);
 
 				CombinedAwayDir += AwayFromZombie * Weight;
 			}
 		}
 
 		CombinedAwayDir = CombinedAwayDir.GetSafeNormal();
-		FVector FleeLocation = PlayerLocation + (CombinedAwayDir * 250.f);
+		const FVector FleeLocation = PlayerLocation + (CombinedAwayDir * 250.f);
 
 		BlackboardComp->SetValueAsVector(FleeLocationKey.SelectedKeyName, FleeLocation);
 		return EBTNodeResult::Succeeded;

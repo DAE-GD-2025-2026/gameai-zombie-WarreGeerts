@@ -12,7 +12,7 @@ void UStudentPerceptorGeertsWarre::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (auto PerceptionComp = GetOwner()->GetComponentByClass<UAIPerceptionComponent>())
+	if (const auto PerceptionComp = GetOwner()->GetComponentByClass<UAIPerceptionComponent>())
 	{
 		PerceptionComp->OnTargetPerceptionUpdated.AddDynamic(this, &UStudentPerceptorGeertsWarre::OnPerceptionUpdated);
 	}
@@ -20,7 +20,7 @@ void UStudentPerceptorGeertsWarre::BeginPlay()
 
 void UStudentPerceptorGeertsWarre::UpdateBlackboardData(AActor* Actor, const FAIStimulus& Stimulus)
 {
-	APawn* OwnerPawn = Cast<APawn>(GetOwner());
+	const APawn* OwnerPawn = Cast<APawn>(GetOwner());
 	if (!OwnerPawn) return;
 
 	AAIController* AIController = Cast<AAIController>(OwnerPawn->GetController());
@@ -37,12 +37,6 @@ void UStudentPerceptorGeertsWarre::UpdateBlackboardData(AActor* Actor, const FAI
 			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange,
 			                                 TEXT("Zombie spotted and added to memory!"));
 		}
-		/*else
-		{
-			TrackedZombies.Remove(Actor);
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow,
-			                                 TEXT("Zombie lost from direct sight!"));
-		}*/
 
 		BlackboardComp->SetValueAsBool(TEXT("HasTrackedZombies"), TrackedZombies.Num() > 0);
 	}
@@ -50,20 +44,17 @@ void UStudentPerceptorGeertsWarre::UpdateBlackboardData(AActor* Actor, const FAI
 	{
 		if (Stimulus.WasSuccessfullySensed())
 		{
-			// ONLY touch the Blackboard keys if this is a BRAND NEW house we haven't processed yet
 			if (!EnteredHouses.Contains(Actor))
 			{
 				EnteredHouses.Add(Actor);
              
-				BlackboardComp->SetValueAsObject(TEXT("TargetHouse"), Actor);
-				BlackboardComp->SetValueAsVector(TEXT("HouseLocation"), Actor->GetActorLocation());
-             
 				GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("House Registered: %s"), *Actor->GetName()));
 			}
+			BlackboardComp->SetValueAsObject(TEXT("TargetHouse"), Actor);
+			BlackboardComp->SetValueAsVector(TEXT("HouseLocation"), Actor->GetActorLocation());
 		}
 		else
 		{
-			// If we lose sight of the house, clear it cleanly
 			AActor* CurrentHouse = Cast<AActor>(BlackboardComp->GetValueAsObject(TEXT("TargetHouse")));
 			if (CurrentHouse == Actor)
 			{

@@ -43,7 +43,7 @@ EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& Owne
 		return EBTNodeResult::Failed;
 	}
 	
-	GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Green,
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green,
 	                                 FString::Printf(
 		                                 TEXT("Attempting to pick up item: %s"),
 		                                 *ItemActor->GetName()));
@@ -56,7 +56,7 @@ EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& Owne
 	const float DistanceToTarget = FVector::Dist(OwnerPawn->GetActorLocation(), ItemActor->GetActorLocation());
 	if (DistanceToTarget > PickupRange)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
 		                                 TEXT("Pickup Failed: Item out of range!"));
 		return EBTNodeResult::Failed;
 	}
@@ -78,22 +78,12 @@ EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& Owne
 
 	if (TargetSlot != -1)
 	{
-		bool bGrabSuccessful = TargetInventory->GrabItem(TargetSlot, PerceivedItem);
+		const bool bGrabSuccessful = TargetInventory->GrabItem(TargetSlot, PerceivedItem);
 		if (!bGrabSuccessful) return EBTNodeResult::Failed;
 
 		GEngine->AddOnScreenDebugMessage(
-			-1, 2.f, FColor::Cyan,
+			-1, 1.f, FColor::Green,
 			FString::Printf(TEXT("Item grabbed successfully into Slot %d!"), TargetSlot));
-
-		for (int32 i = 0; i < InventoryItems.Num(); i++)
-		{
-			const ABaseItem* CurrentItem = InventoryItems[i];
-			FString SlotStatus = CurrentItem ? CurrentItem->GetName() : TEXT("Empty");
-			FString DebugMessage = FString::Printf(TEXT("Slot %d: %s"), i, *SlotStatus);
-
-			GEngine->AddOnScreenDebugMessage(-1, 10.f,
-			                                 CurrentItem ? FColor::Cyan : FColor::Orange, DebugMessage);
-		}
 
 		BlackboardComp->ClearValue(TargetItemKey.SelectedKeyName);
 		return EBTNodeResult::Succeeded;
