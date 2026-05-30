@@ -5,6 +5,7 @@
 #include "Items/BaseItem.h"
 #include "Engine/Engine.h"
 
+
 UBTTask_PickUpItem::UBTTask_PickUpItem()
 {
 	NodeName = "BTT Pickup Item";
@@ -12,18 +13,40 @@ UBTTask_PickUpItem::UBTTask_PickUpItem()
 
 EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow,
+											 TEXT("Picking Up Item. . ."));
+	
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
-	if (!AIController || !BlackboardComp) return EBTNodeResult::Failed;
+	if (!AIController || !BlackboardComp)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
+											 TEXT("Invalid AIController or Blackboard"));
+		return EBTNodeResult::Failed;
+	}
 
 	const APawn* OwnerPawn = AIController->GetPawn();
-	if (!OwnerPawn) return EBTNodeResult::Failed;
+	if (!OwnerPawn)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
+											 TEXT("Invalid OwnerPawn"));
+		return EBTNodeResult::Failed;
+	}
 
-	AActor* ItemActor = Cast<AActor>(BlackboardComp->GetValueAsObject(TargetItemKey.SelectedKeyName));
-	if (!ItemActor) return EBTNodeResult::Failed;
 	
-	GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Green, 
-	FString::Printf(TEXT("Attempting to pick up item: %s"), *ItemActor->GetName()));
+	AActor* ItemActor = Cast<AActor>(BlackboardComp->GetValueAsObject(TargetItemKey.SelectedKeyName));
+	if (!ItemActor)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
+											 TEXT("Invalid ItemActor"));
+		BlackboardComp->ClearValue(TargetItemKey.SelectedKeyName);
+		return EBTNodeResult::Failed;
+	}
+	
+	GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Green,
+	                                 FString::Printf(
+		                                 TEXT("Attempting to pick up item: %s"),
+		                                 *ItemActor->GetName()));
 
 	UInventoryComponent* TargetInventory = OwnerPawn->GetComponentByClass<UInventoryComponent>();
 	if (!TargetInventory) return EBTNodeResult::Failed;
@@ -75,8 +98,8 @@ EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& Owne
 		BlackboardComp->ClearValue(TargetItemKey.SelectedKeyName);
 		return EBTNodeResult::Succeeded;
 	}
-	
+
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-											 TEXT("Pickup Failed!"));
+	                                 TEXT("Pickup Failed!"));
 	return EBTNodeResult::Failed;
 }

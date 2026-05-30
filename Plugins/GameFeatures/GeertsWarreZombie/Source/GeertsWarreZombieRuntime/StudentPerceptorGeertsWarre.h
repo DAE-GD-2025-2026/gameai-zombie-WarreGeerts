@@ -19,14 +19,17 @@ public:
 	UFUNCTION()
 	virtual void OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 
-	static bool ZombieCheck(AActor* Actor);
-
-	// This allows your BTTask_FindFleeLocation to access the list!
+	bool ZombieCheck(AActor* Actor);
+	bool HouseCheck(AActor* Actor);
+	
 	TSet<AActor*>& GetTrackedZombies() { return TrackedZombies; }
-
+	TSet<AActor*>& GetEnteredHouses() { return EnteredHouses; }
 private:
 	GENERATED_BODY()
 
 	UPROPERTY()
 	TSet<AActor*> TrackedZombies;
+	
+	UPROPERTY()
+	TSet<AActor*> EnteredHouses;
 };

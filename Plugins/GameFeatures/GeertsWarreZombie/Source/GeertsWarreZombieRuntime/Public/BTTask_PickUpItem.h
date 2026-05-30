@@ -8,7 +8,7 @@ UCLASS()
 class GEERTSWARREZOMBIERUNTIME_API UBTTask_PickUpItem : public UBTTaskNode
 {
 	GENERATED_BODY()
-    
+
 public:
 	UBTTask_PickUpItem();
     
