@@ -39,7 +39,9 @@ public class GeertsWarreZombieRuntime : ModuleRules
 				"Slate",
 				"SlateCore",
 				"AIModule", 
-				"GameAI_Zombie"
+				"GameAI_Zombie",
+				"AIModule",
+				"GameplayTasks",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
