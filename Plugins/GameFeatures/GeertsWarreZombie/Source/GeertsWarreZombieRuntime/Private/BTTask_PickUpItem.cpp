@@ -4,6 +4,7 @@
 #include "Common/InventoryComponent.h"
 #include "Items/BaseItem.h"
 #include "Engine/Engine.h"
+#include "GeertsWarreZombieRuntime/StudentPerceptorGeertsWarre.h"
 
 
 UBTTask_PickUpItem::UBTTask_PickUpItem()
@@ -33,6 +34,14 @@ EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& Owne
 		return EBTNodeResult::Failed;
 	}
 
+	UStudentPerceptorGeertsWarre* SP =
+		Cast<UStudentPerceptorGeertsWarre>(OwnerPawn->GetComponentByClass(UStudentPerceptorGeertsWarre::StaticClass()));
+	if (!SP)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
+										 TEXT("Invalid UStudentPerceptorGeertsWarre"));
+		return EBTNodeResult::Failed;
+	}
 	
 	AActor* ItemActor = Cast<AActor>(BlackboardComp->GetValueAsObject(TargetItemKey.SelectedKeyName));
 	if (!ItemActor)
@@ -86,6 +95,7 @@ EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& Owne
 			FString::Printf(TEXT("Item grabbed successfully into Slot %d!"), TargetSlot));
 
 		BlackboardComp->ClearValue(TargetItemKey.SelectedKeyName);
+		SP->GetGroundedItems().Remove(PerceivedItem);
 		return EBTNodeResult::Succeeded;
 	}
 

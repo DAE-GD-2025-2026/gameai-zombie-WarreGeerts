@@ -42,14 +42,12 @@ void UStudentPerceptorGeertsWarre::UpdateBlackboardData(AActor* Actor, const FAI
 	}
 	else if (HouseCheck(Actor))
 	{
+		if (CheckedHouses.Contains(Actor)) return;
+		
+		House = Actor;
+
 		if (Stimulus.WasSuccessfullySensed())
 		{
-			if (!EnteredHouses.Contains(Actor))
-			{
-				EnteredHouses.Add(Actor);
-             
-				GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan, FString::Printf(TEXT("House Registered: %s"), *Actor->GetName()));
-			}
 			BlackboardComp->SetValueAsObject(TEXT("TargetHouse"), Actor);
 			BlackboardComp->SetValueAsVector(TEXT("HouseLocation"), Actor->GetActorLocation());
 		}
@@ -63,13 +61,23 @@ void UStudentPerceptorGeertsWarre::UpdateBlackboardData(AActor* Actor, const FAI
 			}
 		}
 	}
-	
+
 	else
 	{
 		if (Stimulus.WasSuccessfullySensed())
 		{
-			BlackboardComp->SetValueAsObject(TEXT("TargetItem"), Actor);
-			BlackboardComp->SetValueAsVector(TEXT("ItemLocation"), Actor->GetActorLocation());
+			if (GroundedItems.Contains(Actor)) return;
+
+			GroundedItems.Add(Actor);
+
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Purple,
+			                                 FString::Printf(
+				                                 TEXT("Item: %s, Location: %s")
+				                                 , *Actor->GetName(), *Actor->GetActorLocation().ToCompactString()));
+
+
+			/*BlackboardComp->SetValueAsObject(TEXT("TargetItem"), Actor);
+			BlackboardComp->SetValueAsVector(TEXT("ItemLocation"), Actor->GetActorLocation());*/
 		}
 	}
 }
@@ -78,6 +86,18 @@ void UStudentPerceptorGeertsWarre::OnPerceptionUpdated(AActor* Actor, FAIStimulu
 {
 	if (!Actor || Actor->GetName().Contains(TEXT("Garbage"))) return;
 	UpdateBlackboardData(Actor, Stimulus);
+}
+
+void UStudentPerceptorGeertsWarre::MarkCurrentHouseAsChecked()
+{
+	if (House != nullptr)
+	{
+		CheckedHouses.Add(House);
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green,
+										 FString::Printf(
+											 TEXT("Added house to checked houses")));
+		House = nullptr;
+	}
 }
 
 bool UStudentPerceptorGeertsWarre::ZombieCheck(AActor* Actor)

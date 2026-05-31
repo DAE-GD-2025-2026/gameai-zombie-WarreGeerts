@@ -18,12 +18,16 @@ public:
     
 	UFUNCTION()
 	virtual void OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	
+	UFUNCTION(BlueprintCallable, Category = "AI|Perception")
+	void MarkCurrentHouseAsChecked();
 
 	bool ZombieCheck(AActor* Actor);
 	bool HouseCheck(AActor* Actor);
 	
 	TSet<AActor*>& GetTrackedZombies() { return TrackedZombies; }
-	TSet<AActor*>& GetEnteredHouses() { return EnteredHouses; }
+	TSet<AActor*>& GetEnteredHouses() { return CheckedHouses; }
+	TSet<AActor*>& GetGroundedItems() { return GroundedItems; }
 private:
 	GENERATED_BODY()
 
@@ -31,5 +35,11 @@ private:
 	TSet<AActor*> TrackedZombies;
 	
 	UPROPERTY()
-	TSet<AActor*> EnteredHouses;
+	TSet<AActor*> CheckedHouses;
+
+	UPROPERTY()
+	AActor* House;
+	
+	UPROPERTY()
+	TSet<AActor*> GroundedItems;
 };
