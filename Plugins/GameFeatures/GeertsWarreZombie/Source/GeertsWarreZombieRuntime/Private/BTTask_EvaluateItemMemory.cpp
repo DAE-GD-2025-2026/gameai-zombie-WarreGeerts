@@ -1,14 +1,14 @@
-﻿#include "BTTask_CheckItemMemory.h"
+﻿#include "BTTask_EvaluateItemMemory.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GeertsWarreZombieRuntime/StudentPerceptorGeertsWarre.h"
 
-UBTTask_CheckItemMemory::UBTTask_CheckItemMemory()
+UBTTask_EvaluateItemMemory::UBTTask_EvaluateItemMemory()
 {
-	NodeName = "BTT Check Item Memory";
+	NodeName = "BTT Evaluate Item Memory";
 }
 
-EBTNodeResult::Type UBTTask_CheckItemMemory::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_EvaluateItemMemory::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();

@@ -38,16 +38,32 @@ void UStudentPerceptorGeertsWarre::UpdateBlackboardData(AActor* Actor, const FAI
 			                                 TEXT("Zombie spotted and added to memory!"));
 		}
 
+		TrackedZombies.Remove(nullptr);
+       
+		for (auto It = TrackedZombies.CreateIterator(); It; ++It)
+		{
+			AActor* ZombieActor = *It;
+			if (!IsValid(ZombieActor))
+			{
+				It.RemoveCurrent();
+			}
+		}
+		
 		BlackboardComp->SetValueAsBool(TEXT("HasTrackedZombies"), TrackedZombies.Num() > 0);
 	}
 	else if (HouseCheck(Actor))
 	{
 		if (CheckedHouses.Contains(Actor)) return;
-		
-		House = Actor;
-
+       
 		if (Stimulus.WasSuccessfullySensed())
 		{
+			AActor* ActiveTarget = Cast<AActor>(BlackboardComp->GetValueAsObject(TEXT("TargetHouse")));
+			if (ActiveTarget != nullptr && ActiveTarget != Actor)
+			{
+				return;
+			}
+
+			House = Actor;
 			BlackboardComp->SetValueAsObject(TEXT("TargetHouse"), Actor);
 			BlackboardComp->SetValueAsVector(TEXT("HouseLocation"), Actor->GetActorLocation());
 		}
@@ -74,10 +90,6 @@ void UStudentPerceptorGeertsWarre::UpdateBlackboardData(AActor* Actor, const FAI
 			                                 FString::Printf(
 				                                 TEXT("Item: %s, Location: %s")
 				                                 , *Actor->GetName(), *Actor->GetActorLocation().ToCompactString()));
-
-
-			/*BlackboardComp->SetValueAsObject(TEXT("TargetItem"), Actor);
-			BlackboardComp->SetValueAsVector(TEXT("ItemLocation"), Actor->GetActorLocation());*/
 		}
 	}
 }
