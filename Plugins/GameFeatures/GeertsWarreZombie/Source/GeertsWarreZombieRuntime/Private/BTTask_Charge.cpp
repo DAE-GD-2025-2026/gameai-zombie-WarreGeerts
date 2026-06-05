@@ -1,60 +1,47 @@
 ﻿#include "BTTask_Charge.h"
-
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GeertsWarreZombieRuntime/StudentPerceptorGeertsWarre.h"
+#include "DrawDebugHelpers.h"
 
 UBTTask_Charge::UBTTask_Charge()
 {
-	NodeName = "BTT Charge";
+	NodeName = "BTS Calculate Charge Location";
+
+	Interval = 0.05f;
+	RandomDeviation = 0.01f;
 }
 
-EBTNodeResult::Type UBTTask_Charge::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+void UBTTask_Charge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
+	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
-	if (!AIController || !BlackboardComp)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Invalid AiController or BlackboardComp"));
-		return EBTNodeResult::Failed;
-	}
+	if (!AIController || !BlackboardComp) return;
 
 	const APawn* OwnerPawn = AIController->GetPawn();
-	if (!OwnerPawn)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Invalid OwnerPawn"));
-		return EBTNodeResult::Failed;
-	}
+	if (!OwnerPawn) return;
 
-	UStudentPerceptorGeertsWarre* SP =
-		Cast<UStudentPerceptorGeertsWarre>(OwnerPawn->GetComponentByClass(UStudentPerceptorGeertsWarre::StaticClass()));
-	if (!SP)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Invalid UStudentPerceptorGeertsWarre"));
-		return EBTNodeResult::Failed;
-	}
+	UStudentPerceptorGeertsWarre* SP = Cast<UStudentPerceptorGeertsWarre>(
+		OwnerPawn->GetComponentByClass(UStudentPerceptorGeertsWarre::StaticClass()));
+	if (!SP) return;
 
 	const TSet<AActor*>& Zombies = SP->GetTrackedZombies();
-
 	if (Zombies.Num() == 0)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow,
-			TEXT("No zombies in memory to charge!"));
 		BlackboardComp->SetValueAsBool(TEXT("HasTrackedZombies"), false);
-		return EBTNodeResult::Failed;
+		BlackboardComp->SetValueAsBool(InRangeKey.SelectedKeyName, false);
+		return;
 	}
 
 	AActor* NearestZombie = nullptr;
-	float ClosestDistanceSq = FLT_MAX; 
+	float ClosestDistanceSq = FLT_MAX;
 	FVector PawnLocation = OwnerPawn->GetActorLocation();
 
 	for (AActor* Zombie : Zombies)
 	{
-		if (!Zombie) continue;
-
+		if (!Zombie || !IsValid(Zombie)) continue;
 		float DistanceSq = FVector::DistSquared(PawnLocation, Zombie->GetActorLocation());
 		if (DistanceSq < ClosestDistanceSq)
 		{
@@ -63,25 +50,46 @@ EBTNodeResult::Type UBTTask_Charge::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		}
 	}
 
-	if (!NearestZombie) return EBTNodeResult::Failed;
+	if (!NearestZombie)
+	{
+		BlackboardComp->SetValueAsBool(InRangeKey.SelectedKeyName, false);
+		return;
+	}
+
+	BlackboardComp->SetValueAsObject(TargetZombieKey.SelectedKeyName, NearestZombie);
 
 	FVector ZombieLocation = NearestZombie->GetActorLocation();
+	float CurrentDistance = FVector::Dist(PawnLocation, ZombieLocation);
 	FVector DirectionToZombie = (ZombieLocation - PawnLocation).GetSafeNormal();
 
-	float CurrentDistance = FVector::Dist(PawnLocation, ZombieLocation);
-	FVector ChargeTargetLocation;
 	if (CurrentDistance > Distance)
 	{
-		// 1. Zombie is too far away! Move closer, but stop exactly at weapon range.
-		ChargeTargetLocation = ZombieLocation - (DirectionToZombie * Distance);
+		FVector ChargeTargetLocation = ZombieLocation - (DirectionToZombie * Distance);
+		BlackboardComp->SetValueAsVector(ChargeLocationKey.SelectedKeyName, ChargeTargetLocation);
+		BlackboardComp->SetValueAsBool(InRangeKey.SelectedKeyName, false);
 	}
 	else
 	{
-		// 2. Zombie is already within weapon range! Stand completely still right here.
-		ChargeTargetLocation = PawnLocation;
+		BlackboardComp->SetValueAsBool(InRangeKey.SelectedKeyName, true);
 	}
-	BlackboardComp->SetValueAsObject(TEXT("TargetZombie"), NearestZombie);
-	BlackboardComp->SetValueAsVector(TEXT("ChargeLocation"), ChargeTargetLocation);
+	
+	if (NearestZombie)
+	{
+		UWorld* World = OwnerPawn->GetWorld();
+    
+		DrawDebugSphere(World, NearestZombie->GetActorLocation(), 15.f, 12, FColor::Red, false, 0.1f);
+    
+		FVector DebugTarget = BlackboardComp->GetValueAsVector(ChargeLocationKey.SelectedKeyName);
+		DrawDebugSphere(World, DebugTarget, 15.f, 12, FColor::Green, false, 0.1f);
+    
+		DrawDebugLine(World, PawnLocation, DebugTarget, FColor::Blue, false, 0.1f, 0, 2.f);
+    
+		DrawDebugLine(World, PawnLocation, NearestZombie->GetActorLocation(), FColor::White, false, 0.1f, 0, 1.f);
 
-	return EBTNodeResult::Succeeded;
+		float CurrentDist = FVector::Dist(PawnLocation, NearestZombie->GetActorLocation());
+		GEngine->AddOnScreenDebugMessage(1, 0.f, FColor::Yellow,
+			FString::Printf(TEXT("Zombie dist: %.1f | Stop dist: %.1f | InRange: %s"),
+				CurrentDist, Distance,
+				CurrentDist <= Distance ? TEXT("YES") : TEXT("NO")));
+	}
 }

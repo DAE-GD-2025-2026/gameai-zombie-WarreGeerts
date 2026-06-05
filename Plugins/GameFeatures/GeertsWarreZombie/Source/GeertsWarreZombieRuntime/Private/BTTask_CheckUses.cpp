@@ -42,7 +42,7 @@ EBTNodeResult::Type UBTTask_CheckUses::ExecuteTask(UBehaviorTreeComponent& Owner
 
 	const TArray<ABaseItem*>& InventoryItems = TargetInventory->GetInventory();
 
-	for (int32 Index = InventoryItems.Num() -1; Index >= 0; --Index)
+	for (int Index = InventoryItems.Num() -1; Index >= 0; --Index)
 	{
 		const ABaseItem* Item = InventoryItems[Index];
 		if (!Item) continue;

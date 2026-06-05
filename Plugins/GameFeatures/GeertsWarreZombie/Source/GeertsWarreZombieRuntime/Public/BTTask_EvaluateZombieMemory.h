@@ -2,19 +2,17 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_Attack.generated.h"
+#include "BTTask_EvaluateZombieMemory.generated.h"
 
 UCLASS()
-class GEERTSWARREZOMBIERUNTIME_API UBTTask_Attack : public UBTTaskNode
+class GEERTSWARREZOMBIERUNTIME_API UBTTask_EvaluateZombieMemory : public UBTTaskNode
 {
 	GENERATED_BODY()
 
 public:
-	UBTTask_Attack();
-	
+	UBTTask_EvaluateZombieMemory();
+
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-
-	UPROPERTY(EditAnywhere, Category = "Blackboard")
-	FBlackboardKeySelector TargetZombieKey;
+	
 };

@@ -5,24 +5,29 @@
 
 UBTTask_FindFleeLocation::UBTTask_FindFleeLocation()
 {
-	NodeName = "BTT Find Flee Location";
+	NodeName = "BTS Find Flee Location";
+	Interval = 0.1f;
+	RandomDeviation = 0.02f;
 }
 
-EBTNodeResult::Type UBTTask_FindFleeLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+void UBTTask_FindFleeLocation::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
+	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
-
-	if (!AIController || !BlackboardComp) return EBTNodeResult::Failed;
+	if (!AIController || !BlackboardComp) return;
 
 	const APawn* OwnerPawn = AIController->GetPawn();
-	if (!OwnerPawn) return EBTNodeResult::Failed;
+	if (!OwnerPawn) return;
 
 	UStudentPerceptorGeertsWarre* Perceptor = OwnerPawn->FindComponentByClass<UStudentPerceptorGeertsWarre>();
-	if (!Perceptor) return EBTNodeResult::Failed;
+	if (!Perceptor) return;
 
 	TSet<AActor*>& TrackedZombies = Perceptor->GetTrackedZombies();
 	const FVector PlayerLocation = OwnerPawn->GetActorLocation();
+
+	// ... Keep your exact zombie distance checks and removal logic here ...
 
 	TArray<AActor*> ZombiesToRemove;
 	for (AActor* Zombie : TrackedZombies)
@@ -38,7 +43,7 @@ EBTNodeResult::Type UBTTask_FindFleeLocation::ExecuteTask(UBehaviorTreeComponent
 		{
 			ZombiesToRemove.Add(Zombie);
 			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-			                                 TEXT("Forgot zombie: Out of radius."));
+											 TEXT("Forgot zombie: Out of radius."));
 		}
 	}
 
@@ -50,7 +55,7 @@ EBTNodeResult::Type UBTTask_FindFleeLocation::ExecuteTask(UBehaviorTreeComponent
 	if (TrackedZombies.Num() == 0)
 	{
 		BlackboardComp->SetValueAsBool(TEXT("HasTrackedZombies"), false);
-		return EBTNodeResult::Failed;
+		return; // Services don't return NodeResults
 	}
 
 	if (TrackedZombies.Num() > 0)
@@ -75,9 +80,8 @@ EBTNodeResult::Type UBTTask_FindFleeLocation::ExecuteTask(UBehaviorTreeComponent
 		const FVector FleeLocation = PlayerLocation + (CombinedAwayDir * 250.f);
 
 		BlackboardComp->SetValueAsVector(FleeLocationKey.SelectedKeyName, FleeLocation);
-		return EBTNodeResult::Succeeded;
+		return;
 	}
 
 	BlackboardComp->ClearValue(FleeLocationKey.SelectedKeyName);
-	return EBTNodeResult::Failed;
 }

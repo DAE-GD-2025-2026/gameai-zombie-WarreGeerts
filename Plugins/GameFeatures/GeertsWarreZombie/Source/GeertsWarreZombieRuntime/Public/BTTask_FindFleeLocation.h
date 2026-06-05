@@ -1,11 +1,11 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "BehaviorTree/BTTaskNode.h"
+#include "BehaviorTree/BTService.h"
 #include "BTTask_FindFleeLocation.generated.h"
 
 UCLASS()
-class GEERTSWARREZOMBIERUNTIME_API UBTTask_FindFleeLocation : public UBTTaskNode
+class GEERTSWARREZOMBIERUNTIME_API UBTTask_FindFleeLocation : public UBTService
 {
 	GENERATED_BODY()
 
@@ -13,8 +13,8 @@ public:
 	UBTTask_FindFleeLocation();
 
 protected:
-	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-
+	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+	
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
 	FBlackboardKeySelector FleeLocationKey;
 

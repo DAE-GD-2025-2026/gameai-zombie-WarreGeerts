@@ -16,7 +16,7 @@ EBTNodeResult::Type UBTTask_CheckInventory::ExecuteTask(UBehaviorTreeComponent& 
 	if (!AIController || !BlackboardComp)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-										 TEXT("Invalid AiController or BlackboardComp"));
+		                                 TEXT("Invalid AiController or BlackboardComp"));
 		return EBTNodeResult::Failed;
 	}
 
@@ -24,7 +24,7 @@ EBTNodeResult::Type UBTTask_CheckInventory::ExecuteTask(UBehaviorTreeComponent& 
 	if (!OwnerPawn)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-										 TEXT("Invalid OwnerPawn"));
+		                                 TEXT("Invalid OwnerPawn"));
 		return EBTNodeResult::Failed;
 	}
 
@@ -33,13 +33,13 @@ EBTNodeResult::Type UBTTask_CheckInventory::ExecuteTask(UBehaviorTreeComponent& 
 	if (!SP)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-										 TEXT("Invalid UStudentPerceptorGeertsWarre"));
+		                                 TEXT("Invalid UStudentPerceptorGeertsWarre"));
 		return EBTNodeResult::Failed;
 	}
 
 	UInventoryComponent* TargetInventory = OwnerPawn->GetComponentByClass<UInventoryComponent>();
 	if (!TargetInventory) return EBTNodeResult::Failed;
-	
+
 	const TArray<ABaseItem*>& InventoryItems = TargetInventory->GetInventory();
 	bool bHasWeapon = false;
 	int AmountShotguns = 0;
@@ -54,31 +54,25 @@ EBTNodeResult::Type UBTTask_CheckInventory::ExecuteTask(UBehaviorTreeComponent& 
 		if (ItemClassName.Contains(TEXT("Shotgun")) || ItemClassName.Contains(TEXT("Pistol")))
 		{
 			bHasWeapon = true;
-			
+
 			if (ItemClassName.Contains(TEXT("Shotgun")))
 			{
 				AmountShotguns++;
-			}else
+			}
+			else
 			{
 				AmountPistols++;
-			}			
-			
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, 
-				FString::Printf(TEXT("Weapon Found: %s"), *ItemClassName));
+			}
 		}
-		
+
 		//check for other items as well. . .
 	}
 
 	//set booleans for other items as well, so they can be used if needed. . .
-	if (bHasWeapon)
-	{
-		BlackboardComp->SetValueAsBool(TEXT("HasWeapon"), bHasWeapon);
-		BlackboardComp->SetValueAsInt(TEXT("AmountShotguns"), AmountShotguns);
-		BlackboardComp->SetValueAsInt(TEXT("AmountPistols"), AmountPistols);
-	}
-	
-	
-	
+	BlackboardComp->SetValueAsBool(TEXT("HasWeapon"), bHasWeapon);
+	BlackboardComp->SetValueAsInt(TEXT("AmountShotguns"), AmountShotguns);
+	BlackboardComp->SetValueAsInt(TEXT("AmountPistols"), AmountPistols);
+
+
 	return EBTNodeResult::Succeeded;
 }

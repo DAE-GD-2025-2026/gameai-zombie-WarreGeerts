@@ -34,23 +34,25 @@ void UStudentPerceptorGeertsWarre::UpdateBlackboardData(AActor* Actor, const FAI
 		if (Stimulus.WasSuccessfullySensed())
 		{
 			TrackedZombies.Add(Actor);
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange,
-			                                 TEXT("Zombie spotted and added to memory!"));
 		}
-
-		TrackedZombies.Remove(nullptr);
-       
-		for (auto It = TrackedZombies.CreateIterator(); It; ++It)
+		else
 		{
-			AActor* ZombieActor = *It;
-			if (!IsValid(ZombieActor))
+			const APawn* ZombiePawn = Cast<APawn>(Actor);
+			if (ZombiePawn && !ZombiePawn->GetController())
 			{
-				It.RemoveCurrent();
+				TrackedZombies.Remove(Actor); 
 			}
 		}
 		
+		TrackedZombies.Remove(nullptr);
+		for (auto It = TrackedZombies.CreateIterator(); It; ++It)
+		{
+			if (!IsValid(*It)) It.RemoveCurrent();
+		}
+
 		BlackboardComp->SetValueAsBool(TEXT("HasTrackedZombies"), TrackedZombies.Num() > 0);
 	}
+	
 	else if (HouseCheck(Actor))
 	{
 		if (CheckedHouses.Contains(Actor)) return;
@@ -114,18 +116,13 @@ void UStudentPerceptorGeertsWarre::MarkCurrentHouseAsChecked()
 
 bool UStudentPerceptorGeertsWarre::ZombieCheck(AActor* Actor)
 {
-	if (const APawn* Pawn = Cast<APawn>(Actor))
-	{
-		if (const AController* Controller = Pawn->GetController())
-		{
-			if (Controller->GetClass()->GetName().Contains(TEXT("BP_ZombieController")))
-			{
-				return true;
-			}
-		}
-	}
-	return false;
+	if (!Actor) return false;
+	// Check the pawn class name instead of the controller
+	return Actor->GetClass()->GetName().Contains(TEXT("Runner")) ||
+		Actor->GetClass()->GetName().Contains(TEXT("Zombie")) ||
+		Actor->GetClass()->GetName().Contains(TEXT("Heavy"));
 }
+
 
 bool UStudentPerceptorGeertsWarre::HouseCheck(AActor* Actor)
 {
