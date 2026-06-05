@@ -14,13 +14,19 @@ public:
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector HasWeaponKey;
+	
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector ShotGunAmountKey;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Default")
-	int MaxAmountShotGun = 1;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Default")
-	int MaxAmountPistol = 1;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Default")
-	int MaxAmountFood = 2;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Default")
-	int MaxAmountMedkit = 1;
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector PistolAmountKey;
+	
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector FoodAmountKey;
+	
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector MedkitAmountKey;
 };

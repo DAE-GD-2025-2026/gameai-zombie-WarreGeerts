@@ -87,11 +87,6 @@ void UStudentPerceptorGeertsWarre::UpdateBlackboardData(AActor* Actor, const FAI
 			if (GroundedItems.Contains(Actor)) return;
 
 			GroundedItems.Add(Actor);
-
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Purple,
-			                                 FString::Printf(
-				                                 TEXT("Item: %s, Location: %s")
-				                                 , *Actor->GetName(), *Actor->GetActorLocation().ToCompactString()));
 		}
 	}
 }

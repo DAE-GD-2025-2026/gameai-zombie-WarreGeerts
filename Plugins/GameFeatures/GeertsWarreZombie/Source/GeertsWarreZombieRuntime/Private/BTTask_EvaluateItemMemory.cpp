@@ -49,6 +49,8 @@ EBTNodeResult::Type UBTTask_EvaluateItemMemory::ExecuteTask(UBehaviorTreeCompone
 
 	bool fullPistols = false;
 	bool fullShotguns = false;
+	bool fullFood = false;
+	bool fullMedkits = false;
 
 	for (AActor* Item : InventoryItems)
 	{
@@ -57,8 +59,7 @@ EBTNodeResult::Type UBTTask_EvaluateItemMemory::ExecuteTask(UBehaviorTreeCompone
 			continue;
 		}
 		
-		FString ItemName = Item->GetName();
-
+		FString ItemName = Item->GetClass()->GetName();
 
 		if (ItemName.Contains(TEXT("Pistol")))
 		{
@@ -78,6 +79,24 @@ EBTNodeResult::Type UBTTask_EvaluateItemMemory::ExecuteTask(UBehaviorTreeCompone
 				fullShotguns = true;
 			}
 		}
+		if (ItemName.Contains(TEXT("Food")))
+		{
+			int FoodCount = BlackboardComp->GetValueAsInt(FoodAmountKey.SelectedKeyName);
+			int MaxFoodCount = BlackboardComp->GetValueAsInt(MaxFoodAmountKey.SelectedKeyName);
+			if (FoodCount >= MaxFoodCount)
+			{
+				fullFood = true;
+			}
+		}
+		if (ItemName.Contains(TEXT("Medkit")))
+		{
+			int MedkitCount = BlackboardComp->GetValueAsInt(MedkitAmountKey.SelectedKeyName);
+			int MaxMedkitCount = BlackboardComp->GetValueAsInt(MaxMedkitAmountKey.SelectedKeyName);
+			if (MedkitCount >= MaxMedkitCount)
+			{
+				fullMedkits = true;
+			}
+		}
 	}
 
 	for (AActor* Item : GroundedItems)
@@ -91,6 +110,8 @@ EBTNodeResult::Type UBTTask_EvaluateItemMemory::ExecuteTask(UBehaviorTreeCompone
 
 		if (SetTarget(BlackboardComp, Item, "Shotgun", fullShotguns)) break;
 		if (SetTarget(BlackboardComp, Item, "Pistol", fullPistols)) break;
+		if (SetTarget(BlackboardComp, Item, "Food", fullFood)) break;
+		if (SetTarget(BlackboardComp, Item, "Medkit", fullMedkits)) break;
 	}
 	return EBTNodeResult::Succeeded;
 }
@@ -102,7 +123,7 @@ bool UBTTask_EvaluateItemMemory::SetTarget(UBlackboardComponent* BC, AActor* Ite
 	if (IsFull) return false;
 	if (!Item) return false;
 
-	const FString ItemName = Item->GetName();
+	const FString ItemName = Item->GetClass()->GetName();
 
 	if (ItemName.Contains(ContainName))
 	{

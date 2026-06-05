@@ -16,6 +16,7 @@ public:
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
+	//weapons
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
 	FBlackboardKeySelector ShotGunAmountKey;
 
@@ -27,4 +28,17 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
 	FBlackboardKeySelector MaxPistolAmountKey;
+	
+	//utilities
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector FoodAmountKey;
+
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector MaxFoodAmountKey;
+	
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector MedkitAmountKey;
+
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector MaxMedkitAmountKey;
 };

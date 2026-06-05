@@ -49,8 +49,6 @@ EBTNodeResult::Type UBTTask_CheckUses::ExecuteTask(UBehaviorTreeComponent& Owner
 
 		if (Item->GetValue() <= 0)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Yellow, 
-			 FString::Printf(TEXT("Removing empty item: %s at index %d"), *Item->GetName(), Index));
 			TargetInventory->RemoveItem(Index);
 		}
 	}

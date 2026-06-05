@@ -52,11 +52,6 @@ EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& Owne
 		return EBTNodeResult::Failed;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green,
-	                                 FString::Printf(
-		                                 TEXT("Attempting to pick up item: %s"),
-		                                 *ItemActor->GetName()));
-
 	UInventoryComponent* TargetInventory = OwnerPawn->GetComponentByClass<UInventoryComponent>();
 	if (!TargetInventory) return EBTNodeResult::Failed;
 
@@ -65,8 +60,6 @@ EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& Owne
 	const float DistanceToTarget = FVector::Dist(OwnerPawn->GetActorLocation(), ItemActor->GetActorLocation());
 	if (DistanceToTarget > PickupRange)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Pickup Failed: Item out of range!"));
 		return EBTNodeResult::Failed;
 	}
 
@@ -88,21 +81,13 @@ EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& Owne
 
 	if (TargetSlot != -1)
 	{
-
-
 		const bool bGrabSuccessful = TargetInventory->GrabItem(TargetSlot, PerceivedItem);
 		if (!bGrabSuccessful) return EBTNodeResult::Failed;
-
-		GEngine->AddOnScreenDebugMessage(
-			-1, 1.f, FColor::Green,
-			FString::Printf(TEXT("Item grabbed successfully into Slot %d!"), TargetSlot));
-
+		
 		BlackboardComp->ClearValue(TargetItemKey.SelectedKeyName);
 		SP->GetGroundedItems().Remove(PerceivedItem);
 		return EBTNodeResult::Succeeded;
 	}
-
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-	                                 TEXT("Pickup Failed!"));
+	
 	return EBTNodeResult::Failed;
 }

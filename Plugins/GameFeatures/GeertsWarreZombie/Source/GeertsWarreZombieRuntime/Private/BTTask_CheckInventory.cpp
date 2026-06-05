@@ -44,6 +44,8 @@ EBTNodeResult::Type UBTTask_CheckInventory::ExecuteTask(UBehaviorTreeComponent& 
 	bool bHasWeapon = false;
 	int AmountShotguns = 0;
 	int AmountPistols = 0;
+	int AmountFood = 0;
+	int AmountMedkits = 0;
 
 	for (const ABaseItem* Item : InventoryItems)
 	{
@@ -65,13 +67,22 @@ EBTNodeResult::Type UBTTask_CheckInventory::ExecuteTask(UBehaviorTreeComponent& 
 			}
 		}
 
-		//check for other items as well. . .
+		if (ItemClassName.Contains(TEXT("Food")))
+		{
+			AmountFood++;
+		}
+
+		if (ItemClassName.Contains(TEXT("Medkit")))
+		{
+			AmountMedkits++;
+		}
 	}
 
-	//set booleans for other items as well, so they can be used if needed. . .
-	BlackboardComp->SetValueAsBool(TEXT("HasWeapon"), bHasWeapon);
-	BlackboardComp->SetValueAsInt(TEXT("AmountShotguns"), AmountShotguns);
-	BlackboardComp->SetValueAsInt(TEXT("AmountPistols"), AmountPistols);
+	BlackboardComp->SetValueAsBool(HasWeaponKey.SelectedKeyName, bHasWeapon);
+	BlackboardComp->SetValueAsInt(ShotGunAmountKey.SelectedKeyName, AmountShotguns);
+	BlackboardComp->SetValueAsInt(PistolAmountKey.SelectedKeyName, AmountPistols);
+	BlackboardComp->SetValueAsInt(FoodAmountKey.SelectedKeyName, AmountFood);
+	BlackboardComp->SetValueAsInt(MedkitAmountKey.SelectedKeyName, AmountMedkits);
 
 
 	return EBTNodeResult::Succeeded;
