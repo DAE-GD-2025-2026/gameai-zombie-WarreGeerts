@@ -45,11 +45,6 @@ EBTNodeResult::Type UBTTask_Eat::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 
 			if (currentEnergy <= TargetEnergy->GetMaxStamina() - foodValue)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan,
-				                                 FString::Printf(
-					                                 TEXT("Current Energy: %f | Food Value: %d | Max Stamina: %f"),
-					                                 currentEnergy, foodValue, TargetEnergy->GetMaxStamina()));
-
 				TargetInventory->UseItem(Index);
 			}
 		}

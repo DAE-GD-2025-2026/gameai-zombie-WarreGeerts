@@ -14,23 +14,16 @@ UBTTask_PickUpItem::UBTTask_PickUpItem()
 
 EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow,
-	                                 TEXT("Picking Up Item. . ."));
-
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 	if (!AIController || !BlackboardComp)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Invalid AIController or Blackboard"));
 		return EBTNodeResult::Failed;
 	}
 
 	const APawn* OwnerPawn = AIController->GetPawn();
 	if (!OwnerPawn)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Invalid OwnerPawn"));
 		return EBTNodeResult::Failed;
 	}
 
@@ -38,16 +31,12 @@ EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& Owne
 		Cast<UStudentPerceptorGeertsWarre>(OwnerPawn->GetComponentByClass(UStudentPerceptorGeertsWarre::StaticClass()));
 	if (!SP)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Invalid UStudentPerceptorGeertsWarre"));
 		return EBTNodeResult::Failed;
 	}
 
 	AActor* ItemActor = Cast<AActor>(BlackboardComp->GetValueAsObject(TargetItemKey.SelectedKeyName));
 	if (!ItemActor)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Invalid ItemActor"));
 		BlackboardComp->ClearValue(TargetItemKey.SelectedKeyName);
 		return EBTNodeResult::Failed;
 	}

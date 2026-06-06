@@ -16,16 +16,12 @@ EBTNodeResult::Type UBTTask_CheckHealth::ExecuteTask(UBehaviorTreeComponent& Own
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 	if (!AIController || !BlackboardComp)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-										 TEXT("Invalid AiController or BlackboardComp"));
 		return EBTNodeResult::Failed;
 	}
 
 	APawn* OwnerPawn = AIController->GetPawn();
 	if (!OwnerPawn)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-										 TEXT("Invalid OwnerPawn"));
 		return EBTNodeResult::Failed;
 	}
 
@@ -33,8 +29,6 @@ EBTNodeResult::Type UBTTask_CheckHealth::ExecuteTask(UBehaviorTreeComponent& Own
 		Cast<UStudentPerceptorGeertsWarre>(OwnerPawn->GetComponentByClass(UStudentPerceptorGeertsWarre::StaticClass()));
 	if (!SP)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-										 TEXT("Invalid UStudentPerceptorGeertsWarre"));
 		return EBTNodeResult::Failed;
 	}
 	

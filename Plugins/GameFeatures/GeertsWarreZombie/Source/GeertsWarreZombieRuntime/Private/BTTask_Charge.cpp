@@ -38,16 +38,28 @@ void UBTTask_Charge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	AActor* NearestZombie = nullptr;
 	float ClosestDistanceSq = FLT_MAX;
 	FVector PawnLocation = OwnerPawn->GetActorLocation();
+	bool foundZombie = false;
 
 	for (AActor* Zombie : Zombies)
 	{
 		if (!Zombie || !IsValid(Zombie)) continue;
 		float DistanceSq = FVector::DistSquared(PawnLocation, Zombie->GetActorLocation());
+		
+		if (DistanceSq > FMath::Square(ChaseRange)) continue;
+		
 		if (DistanceSq < ClosestDistanceSq)
 		{
 			ClosestDistanceSq = DistanceSq;
 			NearestZombie = Zombie;
+			foundZombie = true;
 		}
+	}
+
+	if (!foundZombie)
+	{
+		BlackboardComp->SetValueAsBool(TEXT("HasTrackedZombies"), false);
+		BlackboardComp->SetValueAsBool(InRangeKey.SelectedKeyName, false);
+		return;
 	}
 
 	if (!NearestZombie)
@@ -70,6 +82,7 @@ void UBTTask_Charge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	}
 	else
 	{
+		BlackboardComp->SetValueAsVector(ChargeLocationKey.SelectedKeyName, PawnLocation);
 		BlackboardComp->SetValueAsBool(InRangeKey.SelectedKeyName, true);
 	}
 	
@@ -85,11 +98,5 @@ void UBTTask_Charge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		DrawDebugLine(World, PawnLocation, DebugTarget, FColor::Blue, false, 0.1f, 0, 2.f);
     
 		DrawDebugLine(World, PawnLocation, NearestZombie->GetActorLocation(), FColor::White, false, 0.1f, 0, 1.f);
-
-		float CurrentDist = FVector::Dist(PawnLocation, NearestZombie->GetActorLocation());
-		GEngine->AddOnScreenDebugMessage(1, 0.f, FColor::Yellow,
-			FString::Printf(TEXT("Zombie dist: %.1f | Stop dist: %.1f | InRange: %s"),
-				CurrentDist, Distance,
-				CurrentDist <= Distance ? TEXT("YES") : TEXT("NO")));
 	}
 }

@@ -15,16 +15,12 @@ EBTNodeResult::Type UBTTask_EvaluateZombieMemory::ExecuteTask(UBehaviorTreeCompo
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 	if (!AIController || !BlackboardComp)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-										 TEXT("Invalid AiController or BlackboardComp"));
 		return EBTNodeResult::Failed;
 	}
 
 	const APawn* OwnerPawn = AIController->GetPawn();
 	if (!OwnerPawn)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-										 TEXT("Invalid OwnerPawn"));
 		return EBTNodeResult::Failed;
 	}
 
@@ -32,18 +28,22 @@ EBTNodeResult::Type UBTTask_EvaluateZombieMemory::ExecuteTask(UBehaviorTreeCompo
 		Cast<UStudentPerceptorGeertsWarre>(OwnerPawn->GetComponentByClass(UStudentPerceptorGeertsWarre::StaticClass()));
 	if (!SP)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-										 TEXT("Invalid UStudentPerceptorGeertsWarre"));
 		return EBTNodeResult::Failed;
 	}
-	
+
 	SP->GetTrackedZombies().Remove(nullptr);
 	for (auto It = SP->GetTrackedZombies().CreateIterator(); It; ++It)
 	{
-		if (!IsValid(*It)) It.RemoveCurrent();
+		if (!IsValid(*It))
+		{
+			It.RemoveCurrent();
+			BlackboardComp->ClearValue(TEXT("TargetZombie"));
+			BlackboardComp->ClearValue(TEXT("ChargeLocation"));
+			BlackboardComp->SetValueAsBool(TEXT("ZombieInRange"), false);
+		}
 	}
 
 	BlackboardComp->SetValueAsBool(TEXT("HasTrackedZombies"), SP->GetTrackedZombies().Num() > 0);
-	
+
 	return EBTNodeResult::Succeeded;
 }

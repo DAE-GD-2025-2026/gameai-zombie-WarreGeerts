@@ -24,8 +24,10 @@ public:
 
 	bool ZombieCheck(AActor* Actor);
 	bool HouseCheck(AActor* Actor);
+	bool ZoneCheck(AActor* Actor);
 	
 	TSet<AActor*>& GetTrackedZombies() { return TrackedZombies; }
+	TSet<AActor*>& GetTrackedZones() { return TrackedZones; }
 	TSet<AActor*>& GetEnteredHouses() { return CheckedHouses; }
 	TSet<AActor*>& GetGroundedItems() { return GroundedItems; }
 private:
@@ -33,6 +35,9 @@ private:
 
 	UPROPERTY()
 	TSet<AActor*> TrackedZombies;
+	
+	UPROPERTY()
+	TSet<AActor*> TrackedZones;
 	
 	UPROPERTY()
 	TSet<AActor*> CheckedHouses;

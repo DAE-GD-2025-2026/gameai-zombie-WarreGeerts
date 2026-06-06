@@ -12,13 +12,9 @@ UBTTask_Rotate::UBTTask_Rotate()
 
 EBTNodeResult::Type UBTTask_Rotate::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange,
-	                                 TEXT("Start Rotating. . ."));
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	if (!AIController)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Invalid AiController"));
 		RestorePlayerInput();
 		return EBTNodeResult::Failed;
 	}
@@ -27,8 +23,6 @@ EBTNodeResult::Type UBTTask_Rotate::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	APawn* OwnerPawn = AIController->GetPawn();
 	if (!OwnerPawn)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Invalid OwnerPawn"));
 		RestorePlayerInput();
 		return EBTNodeResult::Failed;
 	}
@@ -67,8 +61,6 @@ void UBTTask_Rotate::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 {
 	if (!CachedPawn.IsValid())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Invalid CachedPawn"));
 		RestorePlayerInput();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		return;

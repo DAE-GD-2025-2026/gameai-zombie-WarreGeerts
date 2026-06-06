@@ -18,6 +18,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Default")
 	float Distance = 150.f;
 	
+	UPROPERTY(EditAnywhere, Category = "Default")
+	float ChaseRange = 500.f;
+	
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
 	FBlackboardKeySelector ChargeLocationKey;
 
@@ -26,4 +29,6 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
 	FBlackboardKeySelector InRangeKey;
+	
+
 };

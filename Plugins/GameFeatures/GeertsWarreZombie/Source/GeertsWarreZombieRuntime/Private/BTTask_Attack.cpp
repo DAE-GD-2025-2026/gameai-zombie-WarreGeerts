@@ -46,38 +46,28 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		DrawDebugSphere(World, ZombieLoc, 10.f, 12, FColor::Red, false, 1.f);
 
 		DrawDebugSphere(World, PawnLoc, 10.f, 12, FColor::Yellow, false, 1.f);
-
-		GEngine->AddOnScreenDebugMessage(2, 1.f, FColor::Orange,
-		                                 FString::Printf(
-			                                 TEXT("Attacking zombie at dist: %.1f"),
-			                                 FVector::Dist(PawnLoc, ZombieLoc)));
 	}
 
 	const TArray<ABaseItem*>& InventoryItems = TargetInventory->GetInventory();
 
+	int WeaponIndex = -1;
 	for (int Index = 0; Index < InventoryItems.Num(); ++Index)
 	{
 		const ABaseItem* Item = InventoryItems[Index];
 		if (!Item) continue;
 
 		FString ItemClassName = Item->GetClass()->GetName();
-
 		if (ItemClassName.Contains(TEXT("Shotgun")) || ItemClassName.Contains(TEXT("Pistol")))
 		{
-			TargetInventory->UseItem(Index);
-
-			SP->GetTrackedZombies().Remove(nullptr);
-			for (auto It = SP->GetTrackedZombies().CreateIterator(); It; ++It)
-			{
-				AActor* ZombieActor = *It;
-				if (!IsValid(ZombieActor))
-				{
-					It.RemoveCurrent();
-				}
-			}
-
-			return EBTNodeResult::Succeeded;
+			WeaponIndex = Index;
+			break; 
 		}
+	}
+
+	if (WeaponIndex != -1)
+	{
+		TargetInventory->UseItem(WeaponIndex); 
+		return EBTNodeResult::Succeeded;
 	}
 
 	return EBTNodeResult::Failed;

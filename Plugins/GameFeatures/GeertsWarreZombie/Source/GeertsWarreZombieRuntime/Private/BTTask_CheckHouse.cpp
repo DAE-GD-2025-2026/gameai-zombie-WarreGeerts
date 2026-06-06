@@ -13,8 +13,6 @@ EBTNodeResult::Type UBTTask_CheckHouse::ExecuteTask(UBehaviorTreeComponent& Owne
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	if (!AIController)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Invalid AiController"));
 		return EBTNodeResult::Failed;
 	}
 
@@ -22,8 +20,6 @@ EBTNodeResult::Type UBTTask_CheckHouse::ExecuteTask(UBehaviorTreeComponent& Owne
 	APawn* OwnerPawn = AIController->GetPawn();
 	if (!OwnerPawn)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-		                                 TEXT("Invalid OwnerPawn"));
 		return EBTNodeResult::Failed;
 	}
 

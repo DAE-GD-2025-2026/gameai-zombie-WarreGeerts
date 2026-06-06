@@ -42,8 +42,6 @@ void UBTTask_FindFleeLocation::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 		if (Distance > MemoryRadius)
 		{
 			ZombiesToRemove.Add(Zombie);
-			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red,
-											 TEXT("Forgot zombie: Out of radius."));
 		}
 	}
 
