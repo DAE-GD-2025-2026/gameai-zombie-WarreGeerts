@@ -2,15 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTService.h"
-#include "BTTask_Charge.generated.h"
+#include "BTTask_ChargeGeertsWarre.generated.h"
 
 UCLASS()
-class GEERTSWARREZOMBIERUNTIME_API UBTTask_Charge : public UBTService
+class GEERTSWARREZOMBIERUNTIME_API UBTTask_ChargeGeertsWarre : public UBTService
 {
 	GENERATED_BODY()
 
 public:
-	UBTTask_Charge();
+	UBTTask_ChargeGeertsWarre();
 
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;

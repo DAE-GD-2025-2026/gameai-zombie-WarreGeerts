@@ -1,15 +1,15 @@
-﻿#include "BTTask_EvaluateZombieMemory.h"
+﻿#include "BTTask_EvaluateZombieMemoryGeertsWarre.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GeertsWarreZombieRuntime/StudentPerceptorGeertsWarre.h"
 
 
-UBTTask_EvaluateZombieMemory::UBTTask_EvaluateZombieMemory()
+UBTTask_EvaluateZombieMemoryGeertsWarre::UBTTask_EvaluateZombieMemoryGeertsWarre()
 {
 	NodeName = "BTT Evaluate Zombie Memory";
 }
 
-EBTNodeResult::Type UBTTask_EvaluateZombieMemory::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_EvaluateZombieMemoryGeertsWarre::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();

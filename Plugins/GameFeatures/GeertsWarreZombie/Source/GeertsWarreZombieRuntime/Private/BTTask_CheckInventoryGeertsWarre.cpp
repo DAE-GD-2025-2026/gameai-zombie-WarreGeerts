@@ -1,15 +1,15 @@
-﻿#include "BTTask_CheckInventory.h"
+﻿#include "BTTask_CheckInventoryGeertsWarre.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GeertsWarreZombieRuntime/StudentPerceptorGeertsWarre.h"
 #include "Common/InventoryComponent.h"
 
-UBTTask_CheckInventory::UBTTask_CheckInventory()
+UBTTask_CheckInventoryGeertsWarre::UBTTask_CheckInventoryGeertsWarre()
 {
 	NodeName = "BTT Check Inventory";
 }
 
-EBTNodeResult::Type UBTTask_CheckInventory::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_CheckInventoryGeertsWarre::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();

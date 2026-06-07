@@ -2,10 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_Rotate.generated.h"
+#include "BTTask_RotateGeertsWarre.generated.h"
 
 UCLASS()
-class GEERTSWARREZOMBIERUNTIME_API UBTTask_Rotate : public UBTTaskNode
+class GEERTSWARREZOMBIERUNTIME_API UBTTask_RotateGeertsWarre : public UBTTaskNode
 {
 	GENERATED_BODY()
     
@@ -16,7 +16,7 @@ class GEERTSWARREZOMBIERUNTIME_API UBTTask_Rotate : public UBTTaskNode
 	TWeakObjectPtr<APlayerController> CachedPlayerController;
 
 public:
-	UBTTask_Rotate();
+	UBTTask_RotateGeertsWarre();
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

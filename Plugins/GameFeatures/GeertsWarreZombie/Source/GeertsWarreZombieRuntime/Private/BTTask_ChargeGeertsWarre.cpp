@@ -1,10 +1,10 @@
-﻿#include "BTTask_Charge.h"
+﻿#include "BTTask_ChargeGeertsWarre.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GeertsWarreZombieRuntime/StudentPerceptorGeertsWarre.h"
 #include "DrawDebugHelpers.h"
 
-UBTTask_Charge::UBTTask_Charge()
+UBTTask_ChargeGeertsWarre::UBTTask_ChargeGeertsWarre()
 {
 	NodeName = "BTS Calculate Charge Location";
 
@@ -12,7 +12,7 @@ UBTTask_Charge::UBTTask_Charge()
 	RandomDeviation = 0.01f;
 }
 
-void UBTTask_Charge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UBTTask_ChargeGeertsWarre::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 

@@ -1,16 +1,16 @@
-﻿#include "BTTask_Attack.h"
+﻿#include "BTTask_AttackGeertsWarre.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Common/InventoryComponent.h"
 #include "GeertsWarreZombieRuntime/StudentPerceptorGeertsWarre.h"
 #include "DrawDebugHelpers.h"
 
-UBTTask_Attack::UBTTask_Attack()
+UBTTask_AttackGeertsWarre::UBTTask_AttackGeertsWarre()
 {
 	NodeName = "BTT Attack";
 }
 
-EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_AttackGeertsWarre::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();

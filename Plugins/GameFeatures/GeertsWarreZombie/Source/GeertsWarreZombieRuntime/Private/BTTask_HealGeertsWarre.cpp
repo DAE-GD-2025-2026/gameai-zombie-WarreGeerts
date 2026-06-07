@@ -1,16 +1,16 @@
-﻿#include "BTTask_Eat.h"
+﻿#include "BTTask_HealGeertsWarre.h"
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Common/InventoryComponent.h"
 #include "GeertsWarreZombieRuntime/StudentPerceptorGeertsWarre.h"
 
-UBTTask_Eat::UBTTask_Eat()
+UBTTask_HealGeertsWarre::UBTTask_HealGeertsWarre()
 {
-	NodeName = "BTT Eat";
+	NodeName = "BTT Heal Player";
 }
 
-EBTNodeResult::Type UBTTask_Eat::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_HealGeertsWarre::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
@@ -35,15 +35,15 @@ EBTNodeResult::Type UBTTask_Eat::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 
 		FString ItemClassName = Item->GetClass()->GetName();
 
-		if (ItemClassName.Contains(TEXT("Food")))
+		if (ItemClassName.Contains(TEXT("Medkit")))
 		{
-			auto currentEnergy = BlackboardComp->GetValueAsFloat(PlayerEnergyKey.SelectedKeyName);
-			auto foodValue = Item->GetValue();
+			auto currentHealth = BlackboardComp->GetValueAsInt(PlayerHealthKey.SelectedKeyName);
+			auto healValue = Item->GetValue();
 
-			UStaminaComponent* TargetEnergy = OwnerPawn->GetComponentByClass<UStaminaComponent>();
-			if (!TargetEnergy) return EBTNodeResult::Failed;
+			UHealthComponent* TargetHealth = OwnerPawn->GetComponentByClass<UHealthComponent>();
+			if (!TargetHealth) return EBTNodeResult::Failed;
 
-			if (currentEnergy <= TargetEnergy->GetMaxStamina() - foodValue)
+			if (currentHealth <= TargetHealth->GetMaxHealth() - healValue)
 			{
 				TargetInventory->UseItem(Index);
 			}

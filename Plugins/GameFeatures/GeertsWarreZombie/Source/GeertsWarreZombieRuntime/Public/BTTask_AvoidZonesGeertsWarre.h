@@ -2,7 +2,7 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTService.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "BTTask_AvoidZones.generated.h"
+#include "BTTask_AvoidZonesGeertsWarre.generated.h"
 
 UCLASS()
 class GEERTSWARREZOMBIERUNTIME_API UBTService_AvoidZones : public UBTService

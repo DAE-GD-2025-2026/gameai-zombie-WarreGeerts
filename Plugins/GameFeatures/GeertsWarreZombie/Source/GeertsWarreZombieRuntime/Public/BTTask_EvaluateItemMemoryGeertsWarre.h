@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_EvaluateItemMemory.generated.h"
+#include "BTTask_EvaluateItemMemoryGeertsWarre.generated.h"
 
 UCLASS()
-class GEERTSWARREZOMBIERUNTIME_API UBTTask_EvaluateItemMemory : public UBTTaskNode
+class GEERTSWARREZOMBIERUNTIME_API UBTTask_EvaluateItemMemoryGeertsWarre : public UBTTaskNode
 {
 	GENERATED_BODY()
 	bool SetTarget(UBlackboardComponent* BC, AActor* Item, const FString& ContainName, const bool IsFull);
 
 public:
-	UBTTask_EvaluateItemMemory();
+	UBTTask_EvaluateItemMemoryGeertsWarre();
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

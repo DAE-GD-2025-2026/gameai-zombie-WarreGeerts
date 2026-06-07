@@ -2,15 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_CheckEnergy.generated.h"
+#include "BTTask_CheckEnergyGeertsWarre.generated.h"
 
 UCLASS()
-class GEERTSWARREZOMBIERUNTIME_API UBTTask_CheckEnergy : public UBTTaskNode
+class GEERTSWARREZOMBIERUNTIME_API UBTTask_CheckEnergyGeertsWarre : public UBTTaskNode
 {
 	GENERATED_BODY()
 
 public:
-	UBTTask_CheckEnergy();
+	UBTTask_CheckEnergyGeertsWarre();
 	
 protected:
 	virtual auto ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) -> EBTNodeResult::Type override;

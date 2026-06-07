@@ -1,14 +1,14 @@
-﻿#include "BTTask_CheckHouse.h"
+﻿#include "BTTask_CheckHouseGeertsWarre.h"
 #include "AIController.h"
 
 #include "GeertsWarreZombieRuntime/StudentPerceptorGeertsWarre.h"
 
-UBTTask_CheckHouse::UBTTask_CheckHouse()
+UBTTask_CheckHouseGeertsWarre::UBTTask_CheckHouseGeertsWarre()
 {
 	NodeName = "BTT Check House";
 }
 
-EBTNodeResult::Type UBTTask_CheckHouse::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_CheckHouseGeertsWarre::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	if (!AIController)

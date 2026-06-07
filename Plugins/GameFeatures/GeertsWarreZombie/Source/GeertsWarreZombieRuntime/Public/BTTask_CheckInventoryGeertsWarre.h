@@ -2,15 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_CheckInventory.generated.h"
+#include "BTTask_CheckInventoryGeertsWarre.generated.h"
 
 UCLASS()
-class GEERTSWARREZOMBIERUNTIME_API UBTTask_CheckInventory : public UBTTaskNode
+class GEERTSWARREZOMBIERUNTIME_API UBTTask_CheckInventoryGeertsWarre : public UBTTaskNode
 {
 	GENERATED_BODY()
 
 public:
-	UBTTask_CheckInventory();
+	UBTTask_CheckInventoryGeertsWarre();
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

@@ -2,15 +2,15 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTService.h"
-#include "BTTask_FindFleeLocation.generated.h"
+#include "BTTask_FindFleeLocationGeertsWarre.generated.h"
 
 UCLASS()
-class GEERTSWARREZOMBIERUNTIME_API UBTTask_FindFleeLocation : public UBTService
+class GEERTSWARREZOMBIERUNTIME_API UBTTask_FindFleeLocationGeertsWarre : public UBTService
 {
 	GENERATED_BODY()
 
 public:
-	UBTTask_FindFleeLocation();
+	UBTTask_FindFleeLocationGeertsWarre();
 
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;

@@ -1,4 +1,4 @@
-﻿#include "BTTask_PickUpItem.h"
+﻿#include "BTTask_PickUpItemGeertsWarre.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Common/InventoryComponent.h"
@@ -7,12 +7,12 @@
 #include "GeertsWarreZombieRuntime/StudentPerceptorGeertsWarre.h"
 
 
-UBTTask_PickUpItem::UBTTask_PickUpItem()
+UBTTask_PickUpItemGeertsWarre::UBTTask_PickUpItemGeertsWarre()
 {
 	NodeName = "BTT Pickup Item";
 }
 
-EBTNodeResult::Type UBTTask_PickUpItem::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_PickUpItemGeertsWarre::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();

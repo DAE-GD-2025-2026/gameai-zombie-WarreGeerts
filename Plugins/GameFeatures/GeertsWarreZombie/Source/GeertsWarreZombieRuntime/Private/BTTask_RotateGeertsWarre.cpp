@@ -1,16 +1,16 @@
-﻿#include "BTTask_Rotate.h"
+﻿#include "BTTask_RotateGeertsWarre.h"
 #include "AIController.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-UBTTask_Rotate::UBTTask_Rotate()
+UBTTask_RotateGeertsWarre::UBTTask_RotateGeertsWarre()
 {
 	NodeName = "BTT Rotate";
 	bNotifyTick = true;
 	bCreateNodeInstance = true;
 }
 
-EBTNodeResult::Type UBTTask_Rotate::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_RotateGeertsWarre::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	if (!AIController)
@@ -57,7 +57,7 @@ EBTNodeResult::Type UBTTask_Rotate::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	return EBTNodeResult::InProgress;
 }
 
-void UBTTask_Rotate::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UBTTask_RotateGeertsWarre::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	if (!CachedPawn.IsValid())
 	{
@@ -93,7 +93,7 @@ void UBTTask_Rotate::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	}
 }
 
-void UBTTask_Rotate::RestorePlayerInput() const
+void UBTTask_RotateGeertsWarre::RestorePlayerInput() const
 {
 	if (CachedPlayerController.IsValid())
 	{

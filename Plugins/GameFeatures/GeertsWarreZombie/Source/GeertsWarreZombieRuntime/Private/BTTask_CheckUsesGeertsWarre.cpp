@@ -1,15 +1,15 @@
-﻿#include "BTTask_CheckUses.h"
+﻿#include "BTTask_CheckUsesGeertsWarre.h"
 
 #include "AIController.h"
 #include "Common/InventoryComponent.h"
 #include "GeertsWarreZombieRuntime/StudentPerceptorGeertsWarre.h"
 
-UBTTask_CheckUses::UBTTask_CheckUses()
+UBTTask_CheckUsesGeertsWarre::UBTTask_CheckUsesGeertsWarre()
 {
 	NodeName = "BTT Check Uses";
 }
 
-EBTNodeResult::Type UBTTask_CheckUses::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_CheckUsesGeertsWarre::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();

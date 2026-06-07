@@ -1,16 +1,16 @@
-﻿#include "BTTask_FindFleeLocation.h"
+﻿#include "BTTask_FindFleeLocationGeertsWarre.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "../StudentPerceptorGeertsWarre.h"
 
-UBTTask_FindFleeLocation::UBTTask_FindFleeLocation()
+UBTTask_FindFleeLocationGeertsWarre::UBTTask_FindFleeLocationGeertsWarre()
 {
 	NodeName = "BTS Find Flee Location";
 	Interval = 0.1f;
 	RandomDeviation = 0.02f;
 }
 
-void UBTTask_FindFleeLocation::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UBTTask_FindFleeLocationGeertsWarre::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 

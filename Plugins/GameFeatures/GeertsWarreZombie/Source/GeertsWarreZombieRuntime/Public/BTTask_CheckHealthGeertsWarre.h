@@ -2,20 +2,19 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_PickUpItem.generated.h"
+#include "BTTask_CheckHealthGeertsWarre.generated.h"
 
 UCLASS()
-class GEERTSWARREZOMBIERUNTIME_API UBTTask_PickUpItem : public UBTTaskNode
+class GEERTSWARREZOMBIERUNTIME_API UBTTask_CheckHealthGeertsWarre : public UBTTaskNode
 {
 	GENERATED_BODY()
 
 public:
-	UBTTask_PickUpItem();
-	float PickupRange = 100.f;
-    
+	UBTTask_CheckHealthGeertsWarre();
+	
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-
+	
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
-	FBlackboardKeySelector TargetItemKey;
+	FBlackboardKeySelector PlayerHealthKey;
 };

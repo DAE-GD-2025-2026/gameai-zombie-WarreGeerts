@@ -1,4 +1,4 @@
-﻿#include "BTTask_EvaluateItemMemory.h"
+﻿#include "BTTask_EvaluateItemMemoryGeertsWarre.h"
 #include "AIController.h"
 #include "IDetailTreeNode.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -8,12 +8,12 @@
 class UInventoryComponent;
 
 
-UBTTask_EvaluateItemMemory::UBTTask_EvaluateItemMemory()
+UBTTask_EvaluateItemMemoryGeertsWarre::UBTTask_EvaluateItemMemoryGeertsWarre()
 {
 	NodeName = "BTT Evaluate Item Memory";
 }
 
-EBTNodeResult::Type UBTTask_EvaluateItemMemory::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_EvaluateItemMemoryGeertsWarre::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	const AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
@@ -109,7 +109,7 @@ EBTNodeResult::Type UBTTask_EvaluateItemMemory::ExecuteTask(UBehaviorTreeCompone
 }
 
 
-bool UBTTask_EvaluateItemMemory::SetTarget(UBlackboardComponent* BC, AActor* Item, const FString& ContainName,
+bool UBTTask_EvaluateItemMemoryGeertsWarre::SetTarget(UBlackboardComponent* BC, AActor* Item, const FString& ContainName,
                                            const bool IsFull)
 {
 	if (IsFull) return false;

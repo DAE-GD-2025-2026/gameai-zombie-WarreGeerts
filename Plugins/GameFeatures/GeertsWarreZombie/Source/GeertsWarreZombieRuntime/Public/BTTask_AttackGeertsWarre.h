@@ -2,19 +2,19 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTask_CheckHealth.generated.h"
+#include "BTTask_AttackGeertsWarre.generated.h"
 
 UCLASS()
-class GEERTSWARREZOMBIERUNTIME_API UBTTask_CheckHealth : public UBTTaskNode
+class GEERTSWARREZOMBIERUNTIME_API UBTTask_AttackGeertsWarre : public UBTTaskNode
 {
 	GENERATED_BODY()
 
 public:
-	UBTTask_CheckHealth();
+	UBTTask_AttackGeertsWarre();
 	
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Blackboard")
-	FBlackboardKeySelector PlayerHealthKey;
+	FBlackboardKeySelector TargetZombieKey;
 };

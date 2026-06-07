@@ -1,16 +1,16 @@
-﻿#include "BTTask_CheckEnergy.h"
+﻿#include "BTTask_CheckHealthGeertsWarre.h"
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Common/StaminaComponent.h"
+#include "Common/HealthComponent.h"
 #include "GeertsWarreZombieRuntime/StudentPerceptorGeertsWarre.h"
 
-UBTTask_CheckEnergy::UBTTask_CheckEnergy()
+UBTTask_CheckHealthGeertsWarre::UBTTask_CheckHealthGeertsWarre()
 {
-	NodeName = "BTT Check Energy";
+	NodeName = "BTT Check Health";
 }
 
-EBTNodeResult::Type UBTTask_CheckEnergy::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTask_CheckHealthGeertsWarre::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AIController = OwnerComp.GetAIOwner();
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
@@ -32,10 +32,10 @@ EBTNodeResult::Type UBTTask_CheckEnergy::ExecuteTask(UBehaviorTreeComponent& Own
 		return EBTNodeResult::Failed;
 	}
 	
-	UStaminaComponent* TargetEnergy = OwnerPawn->GetComponentByClass<UStaminaComponent>();
-	if (!TargetEnergy) return EBTNodeResult::Failed;
+	UHealthComponent* TargetHealth = OwnerPawn->GetComponentByClass<UHealthComponent>();
+	if (!TargetHealth) return EBTNodeResult::Failed;
 	
-	BlackboardComp->SetValueAsFloat(PlayerEnergyKey.SelectedKeyName,TargetEnergy->GetCurrentStamina());
+	BlackboardComp->SetValueAsInt(PlayerHealthKey.SelectedKeyName,TargetHealth->GetHealth());
 	
 	return EBTNodeResult::Succeeded;
 }
